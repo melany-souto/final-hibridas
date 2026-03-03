@@ -102,10 +102,10 @@ export async function getBoardById(id) {
 export async function getBoardsByUser(userId) {
     await connect();
     return db.collection("boards")
-    .find({ 
-        owner: new ObjectId(userId),
-        eliminado: { $ne: true } 
-    }).toArray();
+        .find({
+            owner: new ObjectId(userId),
+            eliminado: { $ne: true }
+        }).toArray();
 }
 
 export async function createBoard(board) {
@@ -125,12 +125,21 @@ export async function addRecipeToBoard(boardId, recipeId) {
     await connect();
 
     console.log(typeof boardId, boardId);       // debe ser string
-console.log(typeof recipeId, recipeId);     // debe ser string
-console.log(new ObjectId(recipeId));        // debe mostrar ObjectId válido
+    console.log(typeof recipeId, recipeId);     // debe ser string
+    console.log(new ObjectId(recipeId));        // debe mostrar ObjectId válido
     return db.collection("boards").updateOne(
         { _id: new ObjectId(boardId) },
-        { $addToSet: { recipes:new ObjectId(recipeId)}}
+        { $addToSet: { recipes: new ObjectId(recipeId) } }
     )
+}
+
+export async function editBoardState(id, newState) {
+    await connect();
+
+    return db.collection("boards").updateOne(
+        { _id: new ObjectId(id) },
+        { $set: { state: newState } }
+    ); 
 }
 
 export async function deleteBoardLog(id) {
@@ -150,6 +159,27 @@ export async function getBoardsShared(userId) {
         eliminado: { $ne: true }
     }).toArray();
 }
+
+// export async function getBoardsShared(userId) {
+//     await connect();
+//     console.log("sharedWith:", board.sharedWith);
+//     const boards = db.collection("boards").aggregate([
+//         { $match: { 
+//             sharedWith: new ObjectId(userId), 
+//             eliminado: { $ne: true } 
+//             } 
+//         },
+//         {
+//             $lookup: {
+//                 from: "users",
+//                 localField: "owner",
+//                 foreignField: "_id",
+//                 as: "ownerInfo"
+//             }
+//         }
+//     ]).toArray();
+//     return boards;
+// }
 
 export async function shareBoard(boardId, targetUserId) {
     await connect();

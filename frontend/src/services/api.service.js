@@ -23,6 +23,11 @@ export function call({ uri, method = "GET", body = undefined }) {
                 const error = await res.json();
                 throw { status: res.status, ...error };
             }
+            if (!res.ok) {
+  const text = await res.text();
+  console.log("ERROR BACKEND:", text);
+  throw new Error(text);
+}
             return res.json()
         })
 }

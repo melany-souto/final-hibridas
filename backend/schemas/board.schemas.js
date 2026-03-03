@@ -11,6 +11,7 @@ export const createBoardSchema = yup.object({
         .string()
         .oneOf(["active", "archived"])
         .default("active")
+        
 });
 
 export const updateBoardSchema = yup.object({
@@ -23,5 +24,10 @@ export const updateBoardSchema = yup.object({
     state: yup
         .string()
         .oneOf(["active", "archived"])
+        .optional(),
+    
+    recipes: yup
+        .array()
+        .of(yup.string())
         .optional()
 });

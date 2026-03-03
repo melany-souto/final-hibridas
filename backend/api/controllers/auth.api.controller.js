@@ -20,13 +20,22 @@
 
 import * as services from "../../services/users.service.js";
 
-export function registerUser(req, res){
-    const { email, password } = req.body;
+// export function registerUser(req, res){
+//     const { email, password } = req.body;
 
-    services.registerUser({ email, password })
+//     services.registerUser({ email, password })
+//         .then((user)=> res.json(user))
+//         .catch(err=> res.status(400).json({ message: err.message }));
+// }
+
+export function registerUser(req, res){
+    const { email, password, name, bio, avatar } = req.body;
+
+    services.registerUser({ email, password, name, bio, avatar })
         .then((user)=> res.json(user))
         .catch(err=> res.status(400).json({ message: err.message }));
 }
+
 
 // export function loginUser(req, res){
 //     const { email, password } = req.body;

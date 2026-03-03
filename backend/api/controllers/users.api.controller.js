@@ -50,7 +50,7 @@ export async function createUser(req, res) {
 
 export async function updateUser( req, res ) {
     const id = req.params.id
-    services.updateUser(req.body, id)
+    services.updateUser(id, req.body)
         .then(userEdited => res.status(202).json(userEdited))
         .catch(err => res.status(500).json({ mensaje: "no se pudo editar" }))
 }

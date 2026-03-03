@@ -40,6 +40,27 @@ main {
   padding-top: 20px; /* opcional, espacio dentro del container */
 }
 
+.btn-primary {
+  background-color: #28a745 !important; /* verde */
+  border-color: #28a745 !important;    /* verde borde */
+}
+
+.btn-primary:hover {
+  background-color: #218838 !important; /* verde más oscuro al pasar mouse */
+  border-color: #1e7e34 !important;
+}
+
+.btn-outline-primary {
+  color: #0c6621 !important;           /* verde texto */
+  border-color: #28a745 !important;    /* verde borde */
+}
+
+.btn-outline-primary:hover {
+  color: #ffffff !important;           /* blanco texto al pasar mouse */
+  background-color: #28a745 !important; /* verde fondo al pasar mouse */
+  border-color: #28a745 !important;    /* verde borde */
+}
+
 /* body {
   margin: 0;
   display: flex;

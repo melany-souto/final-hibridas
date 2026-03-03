@@ -1,10 +1,42 @@
 import * as service from "../../services/recipes.service.js"
 import { ObjectId } from "mongodb"; 
 
-export async function getAllRecipes( req, res ){
-    service.getAllRecipes(req.query)
-        .then((recipes)=> res.status(200).json(recipes))
-        .catch(err => res.status(500).json({mensaje: "Error interno del servidor"}))
+// export async function getAllRecipes( req, res ){
+//     service.getAllRecipes(req.query)
+//         .then((recipes)=> res.status(200).json(recipes))
+//         .catch(err => res.status(500).json({mensaje: "Error interno del servidor"}))
+// }
+
+export function getAllRecipes(req, res) {
+
+  const filter = {};
+
+  if (req.query.categoryId)
+    filter.categoryId = req.query.categoryId;
+
+  if (req.query.difficulty)
+    filter.difficulty = req.query.difficulty;
+
+  if (req.query.title)
+    filter.title = req.query.title;
+
+  // 🔥 interpretar rango
+  if (req.query.cook_time === "lt15")
+    filter.cook_time = { $lt: 15 };
+
+  if (req.query.cook_time === "15-30")
+    filter.cook_time = { $gte: 15, $lte: 30 };
+
+  if (req.query.cook_time === "gt30")
+    filter.cook_time = { $gt: 30 };
+
+  service.getAllRecipes(filter)
+    .then((recipes) => {
+      res.status(200).json(recipes);
+    })
+    .catch((err) => {
+      res.status(500).json({ mensaje: "Error interno del servidor" });
+    });
 }
 
 export async function getRecipeById( req, res){
@@ -29,6 +61,7 @@ export async function getRecipeById( req, res){
 
 export async function getRecipesByUser(req, res) {
     const userId= req.params.userId
+     console.log("userId RECIBIDO DE RECIPE:", userId); // revisá qué llega
     service.getRecipesByUser(userId)
         .then((recipes)=> res.status(200).json(recipes))
         .catch(err => res.status(500).json({mensaje: "Error interno del servidor"}))
@@ -53,7 +86,7 @@ export function createRecipe(req, res) {
         difficulty: req.body.difficulty,
         method: req.body.method,
         video_link: req.body.video_link,
-        userId: userId
+        userId: new ObjectId(userId)
     };
 
     return service.createRecipe(recipe)
@@ -85,7 +118,7 @@ export async function updateRecipe(req, res) {
         difficulty: req.body.difficulty,
         method: req.body.method,
         video_link: req.body.video_link,
-        userId: userId
+        userId: new ObjectId(userId)
     };
 
     return service.updateRecipe(recipeId, recipeData)

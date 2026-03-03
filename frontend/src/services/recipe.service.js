@@ -7,10 +7,21 @@ import { call } from "./api.service.js"
 //     return call({ uri, method: "GET"})
 // }
 
-export async function getRecipes(categoryId = "") {
-  const uri = categoryId ? `recipes?categoryId=${categoryId}` : `recipes`;
+// export async function getRecipes(categoryId = "") {
+//   const uri = categoryId ? `recipes?categoryId=${categoryId}` : `recipes`;
+//   return call({ uri, method: "GET" });
+// }
+
+
+export async function getRecipes(filters = {}) {
+  const params = new URLSearchParams();
+  Object.entries(filters).forEach(([key, value]) => {
+    if (value) params.append(key, value);
+  });
+  const uri = params.toString() ? `recipes?${params.toString()}` : `recipes`;   
   return call({ uri, method: "GET" });
 }
+
 
 export async function getRecipesByUser(userId) {
     return call({ uri: `recipes/users/${userId}`, method: "GET"})

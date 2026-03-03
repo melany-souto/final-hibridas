@@ -32,7 +32,9 @@ export default function MenuBar() {
         {categories.map((category) => (
           <NavLink
             key={category._id}
-            to={`/category/${category._id}`}
+            // to={`/category/${category._id}`}
+            to={`/recipes?categoryId=${category._id}`}
+
             className={({ isActive }) =>
               `btn btn-outline-primary me-2 mb-2 ${isActive ? "active" : ""}`
             }

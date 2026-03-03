@@ -86,6 +86,14 @@ export function deleteBoardLog(req, res) {
         .catch(err => res.status(500).json({ message: "Error al eliminar el tablero" }))
 }
 
+export function editBoardState(req, res) {
+    const id = req.params.boardId;
+
+    services.editBoardState(id, req.body.state)
+        .then(() => res.status(200).json({ message: "El estado del menú se actualizó correctamente" } ))
+        .catch(err => res.status(500).json({ message: "Error al actualizar el estado del menú" }))
+}
+
 
 // funcion compartir
 

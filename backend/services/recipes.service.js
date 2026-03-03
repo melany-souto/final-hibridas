@@ -1,12 +1,12 @@
 
 import { MongoClient, ObjectId } from "mongodb";
 
-const client= new MongoClient ("mongodb+srv://admin:admin@hibridas.h7zhmni.mongodb.net/");
-const db= client.db ("AH2023");
+const client = new MongoClient("mongodb+srv://admin:admin@hibridas.h7zhmni.mongodb.net/");
+const db = client.db("AH2023");
 
 let isConnected = false;
-async function connect(){
-    if(!isConnected){
+async function connect() {
+    if (!isConnected) {
         await client.connect();
         isConnected = true;
     }
@@ -16,64 +16,92 @@ async function connect(){
 
 
 
-export async function getAllRecipes( filter= {} ){
+export async function getAllRecipes(filter = {}) {
 
     console.log("QUERY QUE LLEGA:", filter); // 👈 ACÁ
 
 
-    const filterMongoDB = { eliminado: {$ne:true} };
+    const filterMongoDB = { eliminado: { $ne: true } };
 
-if (filter.categoryId != undefined) {
-    filterMongoDB.categoryId = new ObjectId(filter.categoryId);
-}
+    if (filter.categoryId != undefined) {
+        filterMongoDB.categoryId = new ObjectId(filter.categoryId);
+    }
 
     // if ( filter.id_user != undefined ){
     //     filterMongoDB.id_user = filter.id_user;
     // }
 
-    if (filter.difficulty != undefined ){
+    if (filter.difficulty != undefined) {
         filterMongoDB.difficulty = filter.difficulty;
     }
 
-    if (filter.cook_time != undefined ){
-        filterMongoDB.cook_time = { $lte: parseInt(filter.cook_time) };
+    if (filter.cook_time != undefined) {
+        filterMongoDB.cook_time =  filter.cook_time;
     }
 
-    if (filter.title && filter.title.trim() !== "" ){
-        filterMongoDB.title = {$regex:filter.title, $options: 'i'};
+    if (filter.title && filter.title.trim() !== "") {
+        filterMongoDB.title = { $regex: filter.title, $options: 'i' };
     }
 
 
-     console.log("FILTRO FINAL MONGO:", filterMongoDB); // 👈 ACÁ
+    console.log("FILTRO FINAL MONGO:", filterMongoDB); // 👈 ACÁ
 
 
-     
+
     await connect();
     return db.collection("recipes").find(filterMongoDB).toArray()
 
 }
 
-export async function getRecipeById(id){
+// export async function getRecipeById(id) {
+//     await connect();
+//     return db.collection("recipes").findOne({ _id: new ObjectId(id) })
+// }
+
+export async function getRecipeById(id) {
     await connect();
-    return db.collection("recipes").findOne( { _id: new ObjectId(id) } )
+
+    const recipe = await db.collection("recipes").findOne({
+        _id: new ObjectId(id),
+        eliminado: { $ne: true }
+    });
+
+    if (!recipe) return null;
+
+    const user = await db.collection("users").findOne({
+        _id: new ObjectId(recipe.userId)
+    });
+
+    return {
+        ...recipe,
+        user: user
+            ? {
+                _id: user._id,
+                name: user.name || null,
+                email: user.email
+              }
+            : null
+    };
 }
 
 export async function getRecipesByUser(userId) {
     await connect();
-    return db.collection("recipes").find( { userId: userId } ).toArray()
+    return db.collection("recipes")
+        .find({ userId: new ObjectId(userId) })
+        .toArray()
 }
 
-export async function createRecipe(recipe){
+export async function createRecipe(recipe) {
     await connect();
     return db.collection("recipes").insertOne(recipe)
 }
 
-export async function updateRecipe(id, recipe){
+export async function updateRecipe(id, recipe) {
     await connect();
-    return db.collection("recipes").updateOne( { _id: new ObjectId(id) }, { $set:recipe });
+    return db.collection("recipes").updateOne({ _id: new ObjectId(id) }, { $set: recipe });
 }
 
-export async function deleteRecipeLog(id){
+export async function deleteRecipeLog(id) {
     await connect()
-    return db.collection("recipes").updateOne( { _id: new ObjectId(id) }, { $set: { eliminado:true } })
+    return db.collection("recipes").updateOne({ _id: new ObjectId(id) }, { $set: { eliminado: true } })
 }

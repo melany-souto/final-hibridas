@@ -14,15 +14,21 @@ import Login from "./pages/auth/Login.jsx";
 import Register from "./pages/auth/Register.jsx";
 import Logout from "./pages/auth/Logout.jsx";
 
+import AllRecipes from "./pages/recipes/AllRecipes.jsx";
 import CreateRecipe from "./pages/recipes/createRecipe.jsx";
 import EditRecipe from "./pages/recipes/editRecipe.jsx";
 import RecipeDetail from "./pages/recipes/RecipeDetail.jsx";
 import RecipesByCategory from "./pages/recipes/recipesByCategory.jsx";
+import MyRecipes from "./pages/recipes/MyRecipes.jsx";
 
 import MyBoards from "./pages/boards/myBoards.jsx";
 import CreateBoard from "./pages/boards/CreateBoard.jsx";
 import BoardDetail from "./pages/boards/BoardDetail.jsx";
 import SharedBoard from "./pages/boards/ShareBoard.jsx";
+
+import MyProfile from "./pages/users/MyProfile.jsx";
+import MyProfileEdit from "./pages/users/MyProfileEdit.jsx";
+import UserProfile from "./pages/users/UserProfile.jsx";
 
 
 const router = createBrowserRouter([
@@ -34,14 +40,22 @@ const router = createBrowserRouter([
         path: "/",
         element: <Home />
       },
-      // {
-      //   path: "recipes",
-      //   element: (
-      //     <ProtectedRoute>
-      //       <MyRecipes />
-      //     </ProtectedRoute>
-      //   )
-      // },
+      {
+        path: "/recipes",
+        element: (
+          <ProtectedRoute>
+            <AllRecipes />
+          </ProtectedRoute>
+        )
+      },
+      {
+        path: "/MyRecipes",
+        element: (
+          <ProtectedRoute>
+            <MyRecipes />
+          </ProtectedRoute>
+        )
+      },
       {
         path: "/recipes/:id",
         element: (
@@ -103,6 +117,30 @@ const router = createBrowserRouter([
         element: (
           <ProtectedRoute>
             <SharedBoard />
+          </ProtectedRoute>
+        )
+      },
+      {
+        path: "/MyProfile",
+        element: (
+          <ProtectedRoute>
+            <MyProfile />
+          </ProtectedRoute>
+        )
+      },
+      {
+        path: "/MyProfile/edit",
+        element: (
+          <ProtectedRoute>
+            <MyProfileEdit />
+          </ProtectedRoute>
+        )
+      },
+      {
+        path: "/UserProfile/:id",
+        element: (
+          <ProtectedRoute>
+            <UserProfile />
           </ProtectedRoute>
         )
       },

@@ -19,7 +19,7 @@ async function connect(){
 
 //register, login y logout
 
-export async function registerUser({ email, password }) {
+export async function registerUser({ email, password, name, bio, avatar }) {
     console.log("REGISTER SERVICE:", email, password);
     await connect();
 
@@ -31,12 +31,17 @@ export async function registerUser({ email, password }) {
     const newUser = {
         email,
         password: hashedPass,
+        name: name || "",
+        bio: bio || "",
+        avatar: avatar || "",
         eliminado: false,
+        boards: [],
+        createdAt: new Date(),
     };
 
     await createUser(newUser);
 
-    return { email };
+    return { email, name, avatar };
 }
 
 // export async function loginUser({ email, password }) {
@@ -116,9 +121,26 @@ export async function createUser(user){
     return db.collection("users").insertOne(user)
 }
 
-export async function updateUser(id, user){
-    await connect();
-    return db.collection("users").updateOne( { _id: new ObjectId(id) }, { $set: user })
+// export async function updateUser(id, user){
+//     await connect();
+//     return db.collection("users").updateOne( { _id: new ObjectId(id) }, { $set: user })
+// }
+
+export async function updateUser(id, userData) {
+  await connect();
+
+  // Filtramos los campos que NO están vacíos
+  const dataToUpdate = {};
+  if (userData.name) dataToUpdate.name = userData.name;
+  if (userData.avatar) dataToUpdate.avatar = userData.avatar;
+  if (userData.bio) dataToUpdate.bio = userData.bio;
+
+  // Actualizamos solo los campos con contenido
+  const result = await db
+    .collection("users")
+    .updateOne({ _id: new ObjectId(id) }, { $set: dataToUpdate });
+
+  return result;
 }
 
 export async function deleteUserLog(id){

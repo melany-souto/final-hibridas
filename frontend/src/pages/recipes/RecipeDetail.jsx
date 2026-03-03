@@ -189,6 +189,8 @@ export default function RecipeDetail() {
 
     getRecipeById(id)
       .then((data) => {
+        console.log("DATA COMPLETA:", data);
+        console.log("USER:", data.user);
         setRecipe(data);
       })
       .catch(() => {
@@ -241,6 +243,13 @@ export default function RecipeDetail() {
                 </h6>
               )}
 
+              <p className="text-muted mt-2">
+                Creada por{" "}
+                <Link to={`/UserProfile/${recipe.user._id}`}>
+                  {recipe.user.name || recipe.user.email}
+                </Link>
+              </p>
+
               {recipe.description && (
                 <p className="card-text">{recipe.description}</p>
               )}
@@ -292,8 +301,8 @@ export default function RecipeDetail() {
                   Volver
                 </Link> */}
                 <button onClick={() => navigate(-1)} className="btn btn-outline-secondary">
-    Volver
-</button>
+                  Volver0
+                </button>
 
                 <div>
                   <Link

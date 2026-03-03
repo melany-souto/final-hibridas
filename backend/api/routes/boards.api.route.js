@@ -7,6 +7,7 @@ import { validate } from "../../middleware/schema/validate.js";
 import { loadBoard } from "../../middleware/board/loadBoard.js";
 import { verifyBoardAccess } from "../../middleware/board/verifyBoardAccess.js";
 import { verifyBoardOwner } from "../../middleware/board/verifyBoardOwner.js";
+import { verifyBoardState } from "../../middleware/board/verifyBoardState.js";
 
 import * as controller from "../controllers/boards.api.controller.js";
 
@@ -38,6 +39,7 @@ router.patch(
   verifyToken,
   loadBoard,
   verifyBoardOwner,
+  verifyBoardState,
   validate(schema.updateBoardSchema),
   controller.updateBoard
 );
@@ -47,6 +49,8 @@ router.put(
   verifyToken,
   loadBoard,
   verifyBoardAccess,
+  verifyBoardState,
+  validate(schema.addRecipeToBoardSchema),
   controller.addRecipeToBoard
 );
 
@@ -55,6 +59,7 @@ router.delete(
   verifyToken,
   loadBoard,
   verifyBoardOwner,
+  verifyBoardState,
   controller.deleteBoardLog
 );
 
@@ -64,6 +69,14 @@ router.post(
   loadBoard,
   verifyBoardOwner,
   controller.shareBoard
+);
+
+router.patch(
+    "/:boardId/state",
+    verifyToken,
+    loadBoard,
+    verifyBoardOwner,
+    controller.editBoardState
 );
 
 router.delete(

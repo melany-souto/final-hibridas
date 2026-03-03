@@ -25,9 +25,9 @@ export async function updateBoard(board, id){
     return call({ uri: `boards/${id}`, method: "PUT", body: board})
 }
 
-// export async function editPartialBoard(id, board){
-//     return call({ uri: `boards/${id}`, method: "PATCH", body: board})
-// }
+export async function editPartialBoard(id, board){
+    return call({ uri: `boards/${id}`, method: "PATCH", body: board})
+}
 
 export async function deleteBoardLog(id){
     return call({ uri: `boards/${id}`, method: "DELETE"})
@@ -35,6 +35,10 @@ export async function deleteBoardLog(id){
 
 export async function addRecipeToBoard(boardId, recipeId){
     return call({ uri: `boards/${boardId}/recipes`, method: "PUT", body: { recipeId }});
+}
+
+export async function editBoardState(boardId, newState){
+    return call({ uri: `boards/${boardId}/state`, method: "PATCH", body: { state: newState }})
 }
 
 

@@ -1,40 +1,32 @@
-// import { useState, useEffect } from "react";
-// import { useParams, Link } from "react-router-dom";
+// import { useParams } from "react-router-dom";
+// import { getRecipes } from "../../services/recipe.service.js"; // ruta corregida
 // import RecipeCard from "../../components/RecipeCard.jsx";
-// import { getRecipes } from "../../services/recipe.service.js"
+// import { useState, useEffect } from "react";
+
 // export default function RecipesByCategory() {
-//     const { id: categoryId } = useParams(); // <-- toma categoryId de la URL
-//     const [recipes, setRecipes] = useState([]);
-//     const [error, setError] = useState("");
+//   const { categoryId } = useParams(); // 🔑 id que viene de NavLink
+//   const [recipes, setRecipes] = useState([]);
+//   const [error, setError] = useState("");
 
-//     useEffect(() => {
-//         getRecipes(categoryId)
-//             .then(setRecipes)
-//             .catch((err) => setError(err.message));
-//     }, [categoryId]);
+//   useEffect(() => {
+//     getRecipes(categoryId) // 🔑 pasar categoryId, no nombre
+//       .then(res => setRecipes(res))
+//       .catch(err => setError(err.message));
+//   }, [categoryId]);
 
-//     return (
-//         <div className="text-center">
-//             <h1 className="mb-4 text-indigo fw-bold">Recetas de la categoría</h1>
+//   if (error) return <div className="alert alert-danger">{error}</div>;
+//   if (!recipes.length) return <div>No hay recetas en esta categoría</div>;
 
-//             {error && <div className="alert alert-danger">{error}</div>}
-
-//             <div className="row justify-content-center mb-5">
-//                 {recipes.map((recipe) => (
-//                     <div key={recipe._id} className="col-md-4 mb-4">
-//                         <Link
-//                             to={`/recipes/${recipe._id}`}
-//                             style={{ textDecoration: "none", color: "inherit" }}
-//                         >
-//                             <RecipeCard recipe={recipe} />
-//                         </Link>
-//                     </div>
-//                 ))}
-//             </div>
+//   return (
+//     <div className="row">
+//       {recipes.map(recipe => (
+//         <div key={recipe._id} className="col-md-4 mb-4">
+//           <RecipeCard recipe={recipe} />
 //         </div>
-//     );
+//       ))}
+//     </div>
+//   );
 // }
-
 
 
 
@@ -47,24 +39,78 @@ import { useState, useEffect } from "react";
 export default function RecipesByCategory() {
   const { categoryId } = useParams(); // 🔑 id que viene de NavLink
   const [recipes, setRecipes] = useState([]);
+  const [showFilters, setShowFilters] = useState(false);
+  const [filters, setFilters] = useState({
+    difficulty: "",
+    cook_time: "",
+    title: ""
+  }) // Nuevo estado para mostrar/ocultar filtros
   const [error, setError] = useState("");
 
   useEffect(() => {
-    getRecipes(categoryId) // 🔑 pasar categoryId, no nombre
+    getRecipes({ categoryId, ...filters }) // 🔑 pasar categoryId, no nombre
       .then(res => setRecipes(res))
       .catch(err => setError(err.message));
-  }, [categoryId]);
+  }, [categoryId, filters]);
 
   if (error) return <div className="alert alert-danger">{error}</div>;
   if (!recipes.length) return <div>No hay recetas en esta categoría</div>;
 
   return (
-    <div className="row">
-      {recipes.map(recipe => (
-        <div key={recipe._id} className="col-md-4 mb-4">
-          <RecipeCard recipe={recipe} />
+    <div>
+
+      <button
+        className="btn btn-outline-secondary mb-3"
+        onClick={() => setShowFilters(!showFilters)}
+      >
+        Filtrar
+      </button>
+
+      {showFilters && (
+        <div className="card p-3 mb-3">
+
+          <input
+            type="text"
+            placeholder="Buscar por título"
+            className="form-control mb-2"
+            onChange={(e) =>
+              setFilters({ ...filters, title: e.target.value })
+            }
+          />
+
+          <select
+            className="form-select mb-2"
+            onChange={(e) =>
+              setFilters({ ...filters, difficulty: e.target.value })
+            }
+          >
+            <option value="">Todas las dificultades</option>
+            <option value="easy">Fácil</option>
+            <option value="medium">Media</option>
+            <option value="hard">Difícil</option>
+          </select>
+
+          <input
+            type="number"
+            placeholder="Tiempo máximo (min)"
+            className="form-control"
+            onChange={(e) =>
+              setFilters({ ...filters, cook_time: e.target.value })
+            }
+          />
+
         </div>
-      ))}
+      )}
+
+      <div className="row">
+        {recipes.map(recipe => (
+          <div key={recipe._id} className="col-md-4 mb-4">
+            <RecipeCard recipe={recipe} />
+          </div>
+        ))}
+      </div>
+
     </div>
   );
 }
+
