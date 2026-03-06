@@ -25,8 +25,8 @@ export default function RecipeDetail() {
 
     getRecipeById(id)
       .then((data) => {
-        console.log("DATA COMPLETA:", data);
-        console.log("USER:", data.user);
+        // console.log("DATA COMPLETA:", data);
+        // console.log("USER:", data.user);
         setRecipe(data);
       })
       .catch(() => {
@@ -170,8 +170,7 @@ export default function RecipeDetail() {
         {/* MODAL */}
         {showModal && (
           <div
-            className="modal fade show d-block"
-            style={{ background: "rgba(0,0,0,0.4)" }}
+            className="modal fade show d-block bg-dark"
           >
             <div className="modal-dialog">
               <div className="modal-content">

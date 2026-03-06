@@ -31,17 +31,29 @@ export default function MyProfile() {
             });
     }, [user]);
 
-    if (loading) return <p className="text-center mt-4">Cargando usuario...</p>;
-    if (error) return <p className="text-center text-danger mt-4">{error}</p>;
-    if (!profile) return <p className="text-center mt-4">Perfil no encontrado</p>;
-
     return (
         <>
-            <div className="h2 m-3">Mi Perfil</div>
-            <ProfileCard user={profile} />
-            <NavLink className="btn btn-outline-secondary btn-sm mt-2" to={`/MyProfile/edit`}>
-                Editar perfil
-            </NavLink>
+            <button
+                onClick={() => navigate(-1)}
+                className="btn btn-outline-secondary ms-auto d-block mt-4"
+                title="Volver"
+            >
+                Volver
+            </button>
+
+            {loading && <p className="text-center mt-4">Cargando usuario...</p>}
+            {error && <p className="alert alert-danger mb-3">{error}</p>}
+            {!loading && !error && !profile && <p className="text-center mt-4">Perfil no encontrado</p>}
+
+            {!loading && !error && profile && (
+                <>
+                    <div className="h2 m-3">Mi Perfil</div>
+                    <ProfileCard user={profile} />
+                    <NavLink className="btn btn-outline-secondary btn-sm mt-2" to={`/MyProfile/edit`}>
+                        Editar perfil
+                    </NavLink>
+                </>
+            )}
         </>
-    )
+    );
 }

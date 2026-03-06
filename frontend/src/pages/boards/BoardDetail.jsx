@@ -206,7 +206,7 @@ export default function BoardDetail() {
               </button>
             )}
 
-            <div className="text-muted" style={{ fontSize: "0.9rem" }}>
+            <div className="text-muted font09">
               {user && board.owner === user._id ? (
                 board.sharedWithUsers?.length > 0 ? (
                   <>
@@ -250,10 +250,9 @@ export default function BoardDetail() {
             {user && board.owner === user._id && (
               <>
                 <select
-                  className="form-select mb-2"
+                  className="form-select mb-2 minw150"
                   value={newState}
                   onChange={(e) => setNewState(e.target.value)}
-                  style={{ minWidth: "150px" }}
                 >
                   <option value="active">Activo</option>
                   <option value="cancelled">Cancelado</option>
@@ -271,46 +270,6 @@ export default function BoardDetail() {
           </div>
         </div>
 
-        {/* MODAL
-        {showModal && (
-          <div
-            className="modal fade show d-block"
-            style={{ background: "rgba(0,0,0,0.4)" }}
-          >
-            <div className="modal-dialog">
-              <div className="modal-content">
-                <div className="modal-header">
-                  <h5 className="modal-title">Confirmar eliminación</h5>
-                  <button
-                    className="btn-close"
-                    onClick={() => setShowModal(false)}
-                  />
-                </div>
-
-                <div className="modal-body">
-                  ¿Seguro que querés eliminar esta receta?
-                </div>
-
-                <div className="modal-footer">
-                  <button
-                    className="btn btn-secondary"
-                    onClick={() => setShowModal(false)}
-                  >
-                    Cancelar
-                  </button>
-
-                  <button
-                    className="btn btn-danger"
-                    disabled={saving}
-                    onClick={handleDelete}
-                  >
-                    {saving ? "Eliminando..." : "Eliminar"}
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        )} */}
       </div>
     </div>
   )

@@ -3,7 +3,6 @@ export default function ProfileCard({ user }) {
 
   return (
     <div className="container mt-5">
-
       <div
         className="p-4 rounded shadow-sm"
         style={{ backgroundColor: "#f4f5f7", maxWidth: "600px", margin: "0 auto" }}

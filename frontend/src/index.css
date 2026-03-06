@@ -84,3 +84,15 @@ main {
   min-width: 180px;
 }
 
+.goBack {
+  font-size: "1.5rem"; 
+  line-height: 1; 
+}
+
+.font09 {
+  font-size: 0.9rem;
+}
+
+.minw150 {
+  min-width: "150px";
+}

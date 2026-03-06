@@ -29,7 +29,7 @@ export default function MyRecipes() {
                 <Link to="/recipes/new" className="btn btn-primary">+ Agregar receta</Link>
             </div>
 
-            {error && <p className="text-danger">{error}</p>}
+            {error && <div className="alert alert-danger mb-3">{error}</div>}
 
             {recipes.length === 0 && !error && (
                 <div className="text-center mt-4">

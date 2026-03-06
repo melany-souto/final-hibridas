@@ -72,7 +72,10 @@ export async function getRecipeById(id) {
 export async function getRecipesByUser(userId) {
     await connect();
     return db.collection("recipes")
-        .find({ userId: new ObjectId(userId) })
+        .find({ 
+            userId: new ObjectId(userId),
+            eliminada: { $ne: true }
+         })
         .toArray()
 }
 

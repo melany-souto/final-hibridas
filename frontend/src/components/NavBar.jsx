@@ -5,12 +5,25 @@ import { useNavigate } from "react-router-dom";
 
 export default function NavBar() {
   const { user } = useSession();
-  const [ search, setSearch ] = useState("");
+  const [search, setSearch] = useState("");
   const navigate = useNavigate();
 
   return (
     <nav className="navbar navbar-expand-lg navbar-light bg-light px-3">
-      <Link className="navbar-brand" to="/">Cocina facil</Link>
+      <div className="d-flex align-items-center">
+        {/* Flecha minimalista */}
+        <button
+          onClick={() => navigate(-1)}
+          className="btn p-0 me-2 goBack"
+          title="Volver"
+        >
+          ❮
+        </button>
+
+        <Link className="navbar-brand mb-0 h1" to="/">
+          Cocina facil
+        </Link>
+      </div>
 
       <form
         className="d-flex ms-auto me-3"

@@ -20,20 +20,22 @@ export default function SharedBoard() {
 
     sharedBoard(boardId, email, token)
       .then((response) => {
-        setMessage("Menú compartido correctamente");
+        // setMessage("Menú compartido correctamente");
+        setMessage(response.message);
         setError(false);
         setEmail("");
       })
       .catch((err) => {
         console.error("Error al compartir:", err);
-        setMessage("Error al compartir el menú");
+        const errorMessage = err?.message || "Error al compartir el menú";
+        setMessage(errorMessage);
         setError(true);
       });
   };
 
   return (
     <>
-     <h2 className="p-4">Compartir menú</h2>
+      <h2 className="p-4">Compartir menú</h2>
       <form onSubmit={handleShare} className="d-flex flex-column gap-2">
         <input
           type="email"
@@ -43,9 +45,9 @@ export default function SharedBoard() {
           className="form-control"
         />
 
-       <button type="submit" className="btn btn-sm btn-primary align-self-start">
-  Compartir menú
-</button>
+        <button type="submit" className="btn btn-sm btn-primary align-self-start">
+          Compartir menú
+        </button>
       </form>
 
       {/* Mostrar mensaje */}

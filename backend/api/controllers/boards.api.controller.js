@@ -134,14 +134,17 @@ export async function shareBoard(req, res) {
     if (!user) {
         return res.status(404).json({ message: "Usuario no encontrado" });
     }
-    console.log("Owner del boardDDD:", req.board.owner.toString());
-    console.log("Usuario logueadoOOOOO:", req.user.id);
+    // console.log("Owner del boardDDD:", req.board.owner.toString());
+    // console.log("Usuario logueadoOOOOO:", req.user.id);
     if (req.board.owner.toString() === req.user.id.toString() && req.user.email === email) {
         return res.status(400).json({ message: "no puedes compartir el menú contigo mismo" })
     }
 
     services.shareBoard(board, user._id)
-        .then(() => {
+        .then(result => {
+            if (result.modifiedCount === 0) {
+                return res.status(400).json({ message: "El usuario ya tiene acceso a este tablero" });
+            }
             res.status(202).json({ message: "Tablero compartido correctamente" });
         })
         .catch(err => {

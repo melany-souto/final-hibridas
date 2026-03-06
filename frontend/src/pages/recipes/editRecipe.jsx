@@ -43,8 +43,7 @@ export default function EditRecipe() {
 
   return (
     <>
-
-      {error && <p style={{ color: "red" }}>{error}</p>}
+      {error && <div className="alert alert-danger mb-3">{error}</div>}
 
       <RecipeForm
         initialData={recipe}
