@@ -43,9 +43,9 @@ const router = createBrowserRouter([
       {
         path: "/recipes",
         element: (
-          <ProtectedRoute>
+          // <ProtectedRoute>
             <AllRecipes />
-          </ProtectedRoute>
+          // </ProtectedRoute>
         )
       },
       {
@@ -59,9 +59,9 @@ const router = createBrowserRouter([
       {
         path: "/recipes/:id",
         element: (
-          <ProtectedRoute>
+          // <ProtectedRoute>
             < RecipeDetail />
-          </ProtectedRoute>
+          // </ProtectedRoute>
         )
       },
       {
@@ -83,9 +83,9 @@ const router = createBrowserRouter([
       {
         path: "category/:categoryId",
         element: (
-          <ProtectedRoute>
+          // <ProtectedRoute>
             <RecipesByCategory />
-          </ProtectedRoute>
+          // </ProtectedRoute>
         )
       },
       {
@@ -139,9 +139,9 @@ const router = createBrowserRouter([
       {
         path: "/UserProfile/:id",
         element: (
-          <ProtectedRoute>
+          // <ProtectedRoute>
             <UserProfile />
-          </ProtectedRoute>
+          // </ProtectedRoute>
         )
       },
       {

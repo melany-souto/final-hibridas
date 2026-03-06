@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import RecipeCard from "../../components/RecipeCard";
 import { useUser } from "../../contexts/SessionContext";
 import { getRecipesByUser } from "../../services/recipe.service";
+import { Link } from "react-router-dom";
 
 export default function MyRecipes() {
     const user = useUser();
@@ -23,7 +24,10 @@ export default function MyRecipes() {
 
     return (
         <div className="container mt-4">
-            <h2>Mis recetas</h2>
+            <div className="d-flex justify-content-between align-items-center mb-3">
+                <h2 className="text-indigo">Recetas</h2>
+                <Link to="/recipes/new" className="btn btn-primary">+ Agregar receta</Link>
+            </div>
 
             {error && <p className="text-danger">{error}</p>}
 
@@ -41,7 +45,9 @@ export default function MyRecipes() {
 
             <div className="row">
                 {recipes.map((recipe) => (
-                    <RecipeCard key={recipe._id} recipe={recipe} />
+                    <div key={recipe._id} className="col-md-4 mb-3">
+                        <RecipeCard recipe={recipe} />
+                    </div>
                 ))}
             </div>
         </div>

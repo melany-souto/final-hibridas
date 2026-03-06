@@ -70,11 +70,23 @@ export function addRecipeToBoard(req, res) {
     const { boardId } = req.params;
     const { recipeId } = req.body;
 
+    if (!boardId) {
+        return res.status(400).json({ message: "boardId faltante" });
+    }
+    if (!recipeId) {
+        return res.status(400).json({ message: "recipeId faltante" });
+    }
+    if (recipeId.length !== 24) {
+        return res.status(400).json({ message: "recipeId no es un ObjectId válido" });
+    }
+
     services.addRecipeToBoard(boardId, recipeId)
-        .then(() => res.status(202).json({ message: "Receta agregada al tablero" }))
+        .then(() => {
+            res.status(200).json({ message: "Receta agregada al tablero" });
+        })
         .catch(err => {
             console.error("Error addRecipesToBoard:", err);
-            res.status(500).json({ message: "Error al agregar receta al tablero" });
+            res.status(500).json({ message: err.message || "Error al agregar receta al tablero" });
         });
 }
 
@@ -90,7 +102,7 @@ export function editBoardState(req, res) {
     const id = req.params.boardId;
 
     services.editBoardState(id, req.body.state)
-        .then(() => res.status(200).json({ message: "El estado del menú se actualizó correctamente" } ))
+        .then(() => res.status(200).json({ message: "El estado del menú se actualizó correctamente" }))
         .catch(err => res.status(500).json({ message: "Error al actualizar el estado del menú" }))
 }
 
@@ -108,20 +120,6 @@ export function getBoardsShared(req, res) {
             res.status(500).json({ message: "Tableros no encontrados" });
         });
 }
-
-// export function shareBoard(req, res) {
-//     const board = req.params.boardId;
-//     const { targetUserId } = req.body;
-
-//     services.shareBoard(board, targetUserId)
-//         .then(() => {
-//             res.status(202).json({ message: "Tablero compartido correctamente" });
-//         })
-//         .catch(err => {
-//             res.status(500).json({ message: "Error al compartir el tablero" });
-//         });
-// }
-
 
 export async function shareBoard(req, res) {
     const board = req.params.boardId;

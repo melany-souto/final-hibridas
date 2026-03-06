@@ -34,7 +34,6 @@ export default function NavBar() {
 
       <ul className="navbar-nav">
         {user ? (
-          // Si hay usuario, dropdown con perfil y logout
           <li className="nav-item dropdown">
             <a
               className="nav-link dropdown-toggle"
@@ -59,7 +58,7 @@ export default function NavBar() {
               </li>
               <li>
                 <NavLink className="dropdown-item" to={`/boards`}>
-                  Mis tableros
+                  Mis menús
                 </NavLink>
               </li>
               <li>
@@ -70,7 +69,6 @@ export default function NavBar() {
             </ul>
           </li>
         ) : (
-          // Si NO hay usuario, mostrar iniciar sesión | registrarse
           <>
             <li className="nav-item">
               <NavLink className="nav-link" to="/login">Iniciar Sesión</NavLink>

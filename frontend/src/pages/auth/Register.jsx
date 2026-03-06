@@ -3,131 +3,135 @@ import { registerUser } from "../../services/auth.service";
 import { Link, useNavigate } from "react-router-dom";
 
 export default function Register() {
+  const navigate = useNavigate();
 
-    const navigate = useNavigate();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [passwordConfirm, setPasswordConfirm] = useState("");
+  const [messages, setMessages] = useState([]); 
+  
+  const validateForm = () => {
+    const errors = [];
+    if (!email) errors.push("El email es requerido");
+    else if (!/^\S+@\S+\.\S+$/.test(email)) errors.push("El email debe ser válido");
+    if (!password) errors.push("La contraseña es obligatoria");
+    if (password.length > 0 && password.length < 8) errors.push("La contraseña debe tener al menos 8 caracteres");
+    if (!passwordConfirm) errors.push("Debes confirmar la contraseña");
+    if (password && passwordConfirm && password !== passwordConfirm)
+      errors.push("Las contraseñas no coinciden");
 
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-    const [passwordConfirm, setPasswordConfirm] = useState("");
+    setMessages(errors.map((e) => ({ text: e, type: "error" })));
+    return errors.length === 0;
+  };
 
-    const [error, setError] = useState(""); // error general
-    const [errors, setErrors] = useState([]); // errores del backend Y locales
+  const handleSubmit = (e) => {
+    e.preventDefault();
 
-    const validateForm = () => {
-        const formErrors = [];
-        if (!email) formErrors.push("El email es requerido");
-        if (!email.includes("@")) formErrors.push("El email debe ser válido");
-        if (!password) formErrors.push("La contraseña es obligatoria");
-        if (password.length < 8) formErrors.push("La contraseña debe tener al menos 8 caracteres");
-        if (!passwordConfirm) formErrors.push("Debes confirmar la contraseña");
-        if (password !== passwordConfirm) formErrors.push("Las contraseñas no coinciden");
-        setErrors(formErrors);
+    if (!validateForm()) return;
 
-        return formErrors.length === 0;
-    };
+    const payload = { email, password, username: email };
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
+    registerUser(payload)
+      .then(() => {
+        setMessages([{ text: "Registro exitoso. Redirigiendo a login...", type: "success" }]);
+        setTimeout(() => navigate("/login"), 1500);
+      })
+      .catch((err) => {
+        // errores backend
+        if (err.response?.data?.errors) {
+          const backendErrors = err.response.data.errors.map((e) => ({
+            text: e.message || e,
+            type: "error",
+          }));
+          setMessages(backendErrors);
+        } else {
+          setMessages([{ text: err.response?.data?.message || "Error en el registro", type: "error" }]);
+        }
+      });
+  };
 
-        if (!validateForm()) return;
+  return (
+    <div className="container mt-5">
+      <div className="row justify-content-center">
+        <div className="col-md-4">
+          <div className="card shadow-sm">
+            <div className="card-body">
+              <h3 className="mb-4 text-center text-indigo">Registro</h3>
+              <div>
+                <span>
+                  ¿Ya tienes cuenta?{" "}
+                  <Link className="login text-indigo" to="/login">
+                    Inicia sesión
+                  </Link>
+                </span>
+              </div>
 
-        const payload = {
-            email,
-            password,
-            username: email
-        };
-
-        registerUser(payload)
-            .then(() => {
-                setErrors([]);
-                setError("");
-                navigate('/login');
-            })
-            .catch(err => {
-                {/* Errores del backend (Yup) */ }
-                if (err.response?.data?.errors) {
-                    setErrors(err.response.data.errors);
-                    setError("");
-                } else {
-                    setError(err.response?.data?.message || "Error en el registro");
-                }
-            });
-    };
-
-    return (
-        <div className="container mt-5">
-            <div className="row justify-content-center">
-                <div className="col-md-4">
-                    <div className="card shadow-sm">
-                        <div className="card-body">
-
-                            <h3 className="mb-4 text-center text-indigo">Registro</h3>
-
-                            <div>
-                                <span>¿Ya tienes cuenta?{" "}
-                                    <Link className="login text-indigo" to="/login">Inicia sesión</Link>
-                                </span>
-                            </div>
-
-                            {/* Error general */}
-                            {error && (
-                                <div className="alert alert-danger mt-3">
-                                    {error}
-                                </div>
-                            )}
-
-                            {/* Errores del backend / locales */}
-                            {errors.length > 0 && (
-                                <div className="alert alert-danger mt-3">
-                                    <ul className="mb-0">
-                                        {errors.map((e, i) => (
-                                            <li key={i}>{e}</li>
-                                        ))}
-                                    </ul>
-                                </div>
-                            )}
-
-                            <form onSubmit={handleSubmit} className="mt-3">
-
-                                <div className="mb-3">
-                                    <label className="form-label">Email</label>
-                                    <input
-                                        type="email"
-                                        className="form-control"
-                                        value={email}
-                                        onChange={(e) => setEmail(e.target.value)}
-                                    />
-                                </div>
-
-                                <div className="mb-3">
-                                    <label className="form-label">Contraseña</label>
-                                    <input
-                                        type="password"
-                                        className="form-control"
-                                        value={password}
-                                        onChange={(e) => setPassword(e.target.value)}
-                                    />
-                                </div>
-
-                                <div className="mb-3">
-                                    <label className="form-label">Confirmar contraseña</label>
-                                    <input
-                                        type="password"
-                                        className="form-control"
-                                        value={passwordConfirm}
-                                        onChange={(e) => setPasswordConfirm(e.target.value)}
-                                    />
-                                </div>
-
-                                <button className="btn btnMisto fs-5 w-100" type="submit">
-                                    Registrarme
-                                </button>
-                            </form>
-
-                        </div>
+              {/* Mostrar mensajes */}
+              {messages.length > 0 && (
+                <div className="mt-3">
+                  {messages.map((m, i) => (
+                    <div
+                      key={i}
+                      className={`alert ${
+                        m.type === "error" ? "alert-danger" : "alert-success"
+                      } alert-dismissible fade show`}
+                      role="alert"
+                    >
+                      {m.text}
+                      <button type="button" className="btn-close" onClick={() => setMessages([])}></button>
                     </div>
+                  ))}
                 </div>
+              )}
+
+              <form onSubmit={handleSubmit} className="mt-3">
+                <div className="mb-3">
+                  <label className="form-label">Email</label>
+                  <input
+                    type="email"
+                    className="form-control"
+                    value={email}
+                    onChange={(e) => {
+                      setEmail(e.target.value);
+                      setMessages([]);
+                    }}
+                  />
+                </div>
+
+                <div className="mb-3">
+                  <label className="form-label">Contraseña</label>
+                  <input
+                    type="password"
+                    className="form-control"
+                    value={password}
+                    onChange={(e) => {
+                      setPassword(e.target.value);
+                      setMessages([]);
+                    }}
+                  />
+                </div>
+
+                <div className="mb-3">
+                  <label className="form-label">Confirmar contraseña</label>
+                  <input
+                    type="password"
+                    className="form-control"
+                    value={passwordConfirm}
+                    onChange={(e) => {
+                      setPasswordConfirm(e.target.value);
+                      setMessages([]);
+                    }}
+                  />
+                </div>
+
+                <button className="btn btnMisto fs-5 w-100" type="submit">
+                  Registrarme
+                </button>
+              </form>
             </div>
+          </div>
         </div>
-    );
+      </div>
+    </div>
+  );
 }

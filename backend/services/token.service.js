@@ -1,4 +1,3 @@
-
 import { MongoClient, ObjectId } from "mongodb"
 import jwt from "jsonwebtoken"
 
@@ -31,16 +30,6 @@ export async function createToken(user){
 
     return token;
 }
-
-
-// export function validateToken(token){
-//     try{
-//         return jwt.verify(token, SECRET_KEY);
-//     } catch ( error ) {
-//         return null;
-//     }
-// }
-
 
 export async function validateToken(token) {
     try {

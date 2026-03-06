@@ -1,26 +1,21 @@
-
 import { MongoClient, ObjectId } from "mongodb";
-import bcrypt from "bcrypt"; 
+import bcrypt from "bcrypt";
 import { createToken } from "./token.service.js";
 
-const client= new MongoClient ("mongodb+srv://admin:admin@hibridas.h7zhmni.mongodb.net/");
-const db= client.db ("AH2023");
+const client = new MongoClient("mongodb+srv://admin:admin@hibridas.h7zhmni.mongodb.net/");
+const db = client.db("AH2023");
 
 let isConnected = false;
-async function connect(){
-    if(!isConnected){
+async function connect() {
+    if (!isConnected) {
         await client.connect();
         isConnected = true;
     }
 }
 
-
-
-
 //register, login y logout
 
 export async function registerUser({ email, password, name, bio, avatar }) {
-    console.log("REGISTER SERVICE:", email, password);
     await connect();
 
     const existingUser = await getUserByEmail(email);
@@ -33,7 +28,7 @@ export async function registerUser({ email, password, name, bio, avatar }) {
         password: hashedPass,
         name: name || "",
         bio: bio || "",
-        avatar: avatar || "",
+        avatar: avatar || null,
         eliminado: false,
         boards: [],
         createdAt: new Date(),
@@ -44,43 +39,17 @@ export async function registerUser({ email, password, name, bio, avatar }) {
     return { email, name, avatar };
 }
 
-// export async function loginUser({ email, password }) {
-//     console.log("💻 Login request:", { email, password });
-//     await connect();
-
-//     const user = await getUserByEmail(email);
-//     if (!user) throw new Error("Usuario no encontrado");
-
-//     const isPasswordValid = await bcrypt.compare(password, user.password);
-//     if (!isPasswordValid) throw new Error("Credenciales inválidas");
-
-//     const token = await createToken(user);
-
-//     return {
-//         ...user,
-//         password: undefined,
-//         token,
-//     };
-// }
-
-
-
-
 export async function loginUser({ email, password }) {
     await connect();
 
-    console.log("💻 Login request:", { email, password });
+    // console.log("Login request:", { email, password });
 
     const user = await getUserByEmail(email);
-    console.log("🔹 User from DB:", user);
+    console.log(" User from DB:", user);
 
     if (!user) throw new Error("Usuario no encontrado");
 
-    // loguear el hash que está en la DB
-    console.log("🔹 Hash en DB:", user.password);
-
     const isPasswordValid = await bcrypt.compare(password, user.password);
-    console.log("🔹 Password valid:", isPasswordValid);
 
     if (!isPasswordValid) throw new Error("Credenciales inválidas");
 
@@ -93,22 +62,21 @@ export async function loginUser({ email, password }) {
     };
 }
 
-export async function logoutUser(id){
+export async function logoutUser(id) {
     await connect();
-    return db.collection("users").updateOne( { _id: new ObjectId(id) }, { $set: { token: null } }) 
+    return db.collection("users").updateOne({ _id: new ObjectId(id) }, { $set: { token: null } })
 }
 
-export async function getAllUsers(){
-    const filterMongoDB = { eliminado: {$ne:true} };
-
+export async function getAllUsers() {
+    const filterMongoDB = { eliminado: { $ne: true } };
+    
     await connect();
     return db.collection("users").find(filterMongoDB).toArray()
-
 }
 
-export async function getUserById(id){
+export async function getUserById(id) {
     await connect();
-    return db.collection("users").findOne( { _id: new ObjectId(id) } )
+    return db.collection("users").findOne({ _id: new ObjectId(id) })
 }
 
 export async function getUserByEmail(email) {
@@ -116,7 +84,7 @@ export async function getUserByEmail(email) {
     return db.collection("users").findOne({ email, eliminado: { $ne: true } });
 }
 
-export async function createUser(user){
+export async function createUser(user) {
     await connect();
     return db.collection("users").insertOne(user)
 }
@@ -127,23 +95,23 @@ export async function createUser(user){
 // }
 
 export async function updateUser(id, userData) {
-  await connect();
+    await connect();
 
-  // Filtramos los campos que NO están vacíos
-  const dataToUpdate = {};
-  if (userData.name) dataToUpdate.name = userData.name;
-  if (userData.avatar) dataToUpdate.avatar = userData.avatar;
-  if (userData.bio) dataToUpdate.bio = userData.bio;
+    // Filtrar campos que NO están vacíos
+    const dataToUpdate = {};
+    if (userData.name) dataToUpdate.name = userData.name;
+    if (userData.avatar) dataToUpdate.avatar = userData.avatar;
+    if (userData.bio) dataToUpdate.bio = userData.bio;
 
-  // Actualizamos solo los campos con contenido
-  const result = await db
-    .collection("users")
-    .updateOne({ _id: new ObjectId(id) }, { $set: dataToUpdate });
+    // Actualizarlos campos con contenido
+    const result = await db
+        .collection("users")
+        .updateOne({ _id: new ObjectId(id) }, { $set: dataToUpdate });
 
-  return result;
+    return result;
 }
 
-export async function deleteUserLog(id){
+export async function deleteUserLog(id) {
     await connect()
-    return db.collection("users").updateOne( { _id: new ObjectId(id) }, { $set: { eliminado:true } })
+    return db.collection("users").updateOne({ _id: new ObjectId(id) }, { $set: { eliminado: true } })
 }

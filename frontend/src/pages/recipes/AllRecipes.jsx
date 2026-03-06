@@ -19,10 +19,10 @@ export default function AllRecipes() {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    getRecipes({ 
-      categoryId, 
-      ...filters, 
-      title: titleFromUrl 
+    getRecipes({
+      categoryId,
+      ...filters,
+      title: titleFromUrl
     })
       .then(res => setRecipes(res))
       .catch(err => setError(err.message));
@@ -62,16 +62,16 @@ export default function AllRecipes() {
           </select>
 
           <select
-  className="form-select"
-  onChange={(e) =>
-    setFilters({ ...filters, cook_time: e.target.value })
-  }
->
-  <option value="">Cualquier tiempo</option>
-  <option value="lt15">Menos de 15 min</option>
-  <option value="15-30">Entre 15 y 30 min</option>
-  <option value="gt30">Más de 30 min</option>
-</select>
+            className="form-select"
+            onChange={(e) =>
+              setFilters({ ...filters, cook_time: e.target.value })
+            }
+          >
+            <option value="">Cualquier tiempo</option>
+            <option value="lt15">Menos de 15 min</option>
+            <option value="15-30">Entre 15 y 30 min</option>
+            <option value="gt30">Más de 30 min</option>
+          </select>
 
         </div>
       )}

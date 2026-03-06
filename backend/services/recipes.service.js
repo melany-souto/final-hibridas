@@ -12,41 +12,26 @@ async function connect() {
     }
 }
 
-
-
-
-
 export async function getAllRecipes(filter = {}) {
-
-    console.log("QUERY QUE LLEGA:", filter); // 👈 ACÁ
-
-
     const filterMongoDB = { eliminado: { $ne: true } };
 
     if (filter.categoryId != undefined) {
         filterMongoDB.categoryId = new ObjectId(filter.categoryId);
     }
 
-    // if ( filter.id_user != undefined ){
-    //     filterMongoDB.id_user = filter.id_user;
-    // }
-
     if (filter.difficulty != undefined) {
         filterMongoDB.difficulty = filter.difficulty;
     }
 
     if (filter.cook_time != undefined) {
-        filterMongoDB.cook_time =  filter.cook_time;
+        filterMongoDB.cook_time = filter.cook_time;
     }
 
     if (filter.title && filter.title.trim() !== "") {
         filterMongoDB.title = { $regex: filter.title, $options: 'i' };
     }
 
-
-    console.log("FILTRO FINAL MONGO:", filterMongoDB); // 👈 ACÁ
-
-
+    // console.log("FILTRO FINAL MONGO:", filterMongoDB);
 
     await connect();
     return db.collection("recipes").find(filterMongoDB).toArray()
@@ -79,7 +64,7 @@ export async function getRecipeById(id) {
                 _id: user._id,
                 name: user.name || null,
                 email: user.email
-              }
+            }
             : null
     };
 }

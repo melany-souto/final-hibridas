@@ -6,8 +6,10 @@ export default function RecipeCard({ recipe }) {
       to={`/recipes/${recipe._id}`}
       style={{ textDecoration: "none", color: "inherit" }}
     >
-      <div className="card shadow-sm h-100 mx-auto" style={{  maxWidth: "400px", 
-          width: "100%" }}> 
+      <div className="card shadow-sm h-100 mx-auto" style={{
+        maxWidth: "400px",
+        width: "100%"
+      }}>
         <img
           src={recipe.image || "https://picsum.photos/400/300"}
           className="card-img-top"

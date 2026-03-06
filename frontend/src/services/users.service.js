@@ -1,6 +1,5 @@
 import { call } from "./api.service"
 
-
 export async function getUsers(filter={}){
     return call({ uri: `users`, method: "GET"})
 }

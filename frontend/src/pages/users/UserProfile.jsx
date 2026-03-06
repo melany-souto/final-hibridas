@@ -5,8 +5,8 @@ import ProfileCard from "../../components/ProfileCard";
 
 export default function UserProfile() {
     const { id } = useParams();
-    const [ profile, setProfile ] = useState(null);
-    const [ error, setError ] = useState("");
+    const [profile, setProfile] = useState(null);
+    const [error, setError] = useState("");
 
     useEffect(() => {
         getUserById(id)

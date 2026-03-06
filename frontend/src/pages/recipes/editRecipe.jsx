@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import RecipeForm from "../../components/RecipeForm";
@@ -12,26 +11,47 @@ export default function EditRecipe() {
   const [categories, setCategories] = useState([]);
   const [recipe, setRecipe] = useState(null);
   const [saving, setSaving] = useState(false);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     getCategories().then(setCategories);
     getRecipeById(id).then(setRecipe);
   }, [id]);
 
-  const handleSubmit = async (data) => {
+  const handleSubmit = (data) => {
     setSaving(true);
-    await editPartialRecipe(id, data);
-    navigate("/");
-  };
+    setError(null);
 
+    editPartialRecipe(id, data)
+      .then(() => {
+        navigate("/");
+      })
+      .catch((err) => {
+        console.error("Error al editar:", err);
+
+        if (err.status === 403) {
+          setError("No tenés permiso para editar esta receta.");
+        } else {
+          setError("Ocurrió un error al guardar.");
+        }
+      })
+      .finally(() => {
+        setSaving(false);
+      });
+  };
   if (!recipe) return <p>Cargando...</p>;
 
   return (
-    <RecipeForm
-      initialData={recipe}
-      categories={categories}
-      onSubmit={handleSubmit}
-      saving={saving}
-    />
+    <>
+
+      {error && <p style={{ color: "red" }}>{error}</p>}
+
+      <RecipeForm
+        initialData={recipe}
+        categories={categories}
+        onSubmit={handleSubmit}
+        saving={saving}
+      />
+    </>
   );
 }

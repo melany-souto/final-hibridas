@@ -4,9 +4,9 @@ import { useState, useEffect } from "react";
 export default function RecipeForm({ initialData, categories, onSubmit, saving }) {
   const [formData, setFormData] = useState(initialData);
 
-  useEffect(() => {
-    setFormData(initialData);
-  }, [initialData]);
+  // useEffect(() => {
+  //   setFormData(initialData);
+  // }, [initialData]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -22,11 +22,12 @@ export default function RecipeForm({ initialData, categories, onSubmit, saving }
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    onSubmit(formData); // 🔥 devuelve datos
+    onSubmit(formData);
   };
 
   return (
     <div className="container mt-4">
+      <h2 className="mt-4">Nueva receta</h2>
       <form onSubmit={handleSubmit}>
         <input name="title" value={formData.title} onChange={handleChange} className="form-control mb-2" placeholder="Título" required />
 

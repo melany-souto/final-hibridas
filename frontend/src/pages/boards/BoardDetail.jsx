@@ -1,219 +1,3 @@
-
-
-// import { useState, useEffect } from "react";
-// import { Link, useParams } from "react-router-dom";
-// import {
-//   getBoardById,
-//   addRecipeToBoard,
-// } from "../../services/board.service.js";
-// import { getRecipes } from "../../services/recipe.service.js";
-// import { useUser } from "../../contexts/SessionContext";
-// import { useNavigate } from "react-router-dom";
-// import { editBoardState, deleteBoardLog, editPartialBoard } from "../../services/board.service.js";
-
-// export default function BoardDetail() {
-//   const { id } = useParams();
-//   const user = useUser();
-//   const navigate = useNavigate();
-
-//   const [board, setBoard] = useState({ recipes: [] });
-//   const [recipes, setRecipes] = useState([]);
-//   const [selectedRecipe, setSelectedRecipe] = useState("");
-//   const [error, setError] = useState("");
-//   const [state, setState] = useState(board.state || "active");
-
-//   useEffect(() => {
-//     fetchBoard();
-//     fetchRecipes();
-//   }, []);
-
-//   const fetchBoard = async () => {
-//     const data = await getBoardById(id);
-//     setBoard(data);
-//     console.log(data)
-//   }
-
-//   const fetchRecipes = async () => {
-//     const data = await getRecipes();
-//     setRecipes(data);
-//   }
-
-//   const handdleAddRecipe = async () => {
-//     if (!selectedRecipe) return;
-//     await addRecipeToBoard(id, selectedRecipe);
-//     fetchBoard();
-//     setSelectedRecipe("");
-//   }
-
-//   const handleDelete = async () => {
-//     if (!window.confirm("¿Estás seguro de que quieres eliminar este tablero?")) return;
-
-//     deleteBoardLog(board._id)
-//       .then(() => navigate("/boards"))
-//       .catch(err => {
-//         console.error("Error al eliminar el menú:", err);
-//         setError("No se pudo eliminar el menú. Intenta nuevamente.");
-//       });
-//   }
-
-//   const handleRemoveRecipe = (recipeId) => {
-//     const newRecipes = board.recipes.filter(id => id !== recipeId);
-
-//     editPartialBoard(id, { recipes: newRecipes })
-//       .then(() => {
-//         setBoard(prev => ({
-//           ...prev,
-//           recipes: newRecipes
-//         }));
-//       })
-//       .catch(err => {
-//         console.error("Error al eliminar receta del tablero:", err);
-//         setError("No se pudo eliminar la receta del tablero. Intenta nuevamente.");
-//       })
-//   }
-
-//   const handleChangeState = (newState) => {
-//     editBoardState(id, newState)
-//       .then(() => {
-//         setBoard(prev => ({
-//           ...prev,
-//           state: newState
-//         }));
-//       })
-//       .catch(err => {
-//         console.error("Error al cambiar el estado del tablero:", err);
-//         setError("No se pudo cambiar el estado del tablero. Intenta nuevamente.");
-//       });
-//   }
-
-//   return (
-//     <div className="container mt-4">
-
-//       {/* Header */}
-//       <div className="d-flex justify-content-between align-items-center mb-4">
-//         <h2>{board.title}</h2>
-
-//         <div>
-//           {user && board.owner === user._id && (
-//             <>
-//               <button
-//                 className="btn btn-outline-primary me-2"
-//                 onClick={() => navigate(`/boards/${board._id}/share`)}
-//               >
-//                 Compartir
-//               </button>
-
-//               <button
-//                 className="btn btn-danger"
-//                 onClick={handleDelete}
-//               >
-//                 Eliminar
-//               </button>
-//               {/* Desplegable para cambiar estado */}
-//               <div className="mb-3">
-//                 <label className="form-label">Estado del tablero:</label>
-//                 <select
-//                   className="form-select"
-//                   value={state}
-//                   onChange={(e) => setState(e.target.value)}
-//                 // disabled={loading} // evita cambios mientras actualiza
-//                 >
-//                   <option value="active">Activo</option>
-//                   <option value="cancelled">Cancelado</option>
-//                   <option value="finished">Terminado</option>
-//                 </select>
-//               </div>
-
-//               {/* Botón para guardar */}
-//               <button
-//                 className="btn btn-success"
-//                 onClick={handleChangeState()}
-//               // disabled={loading}
-//               >
-//                 {/* {loading ? "Actualizando..." : "Actualizar estado"} */}
-//               </button>
-
-//             </>
-//           )}
-//         </div>
-//       </div>
-
-//       {/* Columna estilo Trello */}
-//       <div
-//         className="p-3 rounded"
-//         style={{ backgroundColor: "#f4f5f7", maxWidth: "500px" }}
-//       >
-//         <h5 className="mb-3">Recetas del menú</h5>
-
-//         {board.recipes.length === 0 ? (
-//           <p className="text-muted">No hay recetas en este tablero.</p>
-//         ) : (
-//           board.recipes.map((recipeId) => {
-//             const recipe = recipes.find(r => r._id === recipeId);
-//             if (!recipe) return null;
-
-//             return (
-//               <div
-//                 key={recipeId}
-//                 className="card mb-2 shadow-sm"
-//               >
-//                 <div className="card-body d-flex justify-content-between align-items-center p-2">
-//                   <Link
-//                     to={`/recipes/${recipe._id}`}
-//                     style={{ textDecoration: "none" }}
-//                   >
-//                     {recipe.title}
-//                   </Link>
-
-//                   {user && board.owner === user._id && (
-//                     <button
-//                       onClick={() => handleRemoveRecipe(recipeId)}
-//                       className="btn btn-sm btn-outline-danger"
-//                     >
-//                       ❌
-//                     </button>
-//                   )}
-//                 </div>
-//               </div>
-//             );
-//           })
-//         )}
-
-//         {/* Agregar receta */}
-//         {user && board.owner === user._id && (
-//           <div className="mt-3">
-//             <select
-//               className="form-select mb-2"
-//               value={selectedRecipe}
-//               onChange={(e) => setSelectedRecipe(e.target.value)}
-//             >
-//               <option value="">Seleccionar receta</option>
-//               {recipes.map((rec) => (
-//                 <option key={rec._id} value={rec._id}>
-//                   {rec.title}
-//                 </option>
-//               ))}
-//             </select>
-
-//             <button
-//               className="btn btn-success w-100"
-//               onClick={handdleAddRecipe}
-//             >
-//               + Agregar receta
-//             </button>
-//           </div>
-//         )}
-//       </div>
-
-//     </div>
-//   );
-// }
-
-
-
-
-
-
 import { useState, useEffect } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
 import {
@@ -221,48 +5,73 @@ import {
   addRecipeToBoard,
   editBoardState,
   deleteBoardLog,
-  editPartialBoard
+  editPartialBoard,
+  unshareBoard
 } from "../../services/board.service.js";
 import { getRecipes } from "../../services/recipe.service.js";
 import { useUser } from "../../contexts/SessionContext";
+// import { getUserById } from "../../services/users.service.js";
 
 export default function BoardDetail() {
   const { id } = useParams();
   const user = useUser();
   const navigate = useNavigate();
 
-  const [board, setBoard] = useState({ recipes: [] });
+  const [board, setBoard] = useState({ recipes: [], sharedWithUsers: [] });
   const [recipes, setRecipes] = useState([]);
   const [selectedRecipe, setSelectedRecipe] = useState("");
   const [error, setError] = useState("");
-  const [state, setState] = useState("active"); // se inicializa por default
+  const [state, setState] = useState("active");
+  const [newState, setNewState] = useState("active");
 
-  // ─── Fetch inicial ─────────────────────────────
   useEffect(() => {
     fetchBoard();
     fetchRecipes();
-  }, []);
+  }, [id]);
 
-  const fetchBoard = async () => {
-    const data = await getBoardById(id);
-    setBoard(data);
-    setState(data.state || "active"); // ⚡ sincroniza state con la DB
+
+  const fetchBoard = () => {
+    getBoardById(id)
+      .then((data) => {
+        setBoard(data);
+        setState(data.state || "active");
+        setNewState(data.state || "active");
+      })
+      .catch((err) => {
+        console.error(err);
+        setError("No se pudo cargar el menú");
+      })
   };
 
-  const fetchRecipes = async () => {
-    const data = await getRecipes();
-    setRecipes(data);
-  };
+  const fetchRecipes = () => {
+    getRecipes()
+      .then((data) => {
+        setRecipes(data);
+      })
+      .catch((err) => {
+        console.error(err);
+        setError("No se pudieron cargar las recetas");
+      })
+  }
 
-  // ─── Agregar receta ───────────────────────────
+
+  // Agregar receta
   const handdleAddRecipe = async () => {
     if (!selectedRecipe) return;
-    await addRecipeToBoard(id, selectedRecipe);
-    fetchBoard();
-    setSelectedRecipe("");
+
+    addRecipeToBoard(id, selectedRecipe)
+      .then(() => {
+        fetchBoard();
+        setSelectedRecipe("");
+      })
+      .catch((err) => {
+        console.error(err);
+        setError("No se pudo agregar la receta")
+      })
+
   };
 
-  // ─── Eliminar tablero ─────────────────────────
+  // elimiinar tablero
   const handleDelete = async () => {
     if (!window.confirm("¿Estás seguro de que quieres eliminar este tablero?")) return;
 
@@ -274,129 +83,235 @@ export default function BoardDetail() {
       });
   };
 
-  // ─── Eliminar receta del tablero ─────────────
+  // eliminar receta
   const handleRemoveRecipe = (recipeId) => {
     const newRecipes = board.recipes.filter(id => id !== recipeId);
 
     editPartialBoard(id, { recipes: newRecipes })
-      .then(() => setBoard(prev => ({ ...prev, recipes: newRecipes })))
+      .then(() =>
+        setBoard(prev => ({ ...prev, recipes: newRecipes })))
       .catch(err => {
         console.error(err);
         setError("No se pudo eliminar la receta del tablero. Intenta nuevamente.");
       });
   };
 
-  // ─── Cambiar estado del tablero ──────────────
+  //cambiar estado
   const handleChangeState = (newState) => {
     editBoardState(id, newState)
-      .then(() => setBoard(prev => ({ ...prev, state: newState })))
+      .then(() => {
+        setBoard(prev => ({ ...prev, state: newState }));
+        setState(newState);
+      })
       .catch(err => {
         console.error(err);
         setError("No se pudo cambiar el estado del tablero. Intenta nuevamente.");
       });
   };
 
-  // ─── Render ──────────────────────────────────
-  return (
-  <div className="container mt-4">
-    {/* Header con botones */}
-    <div className="d-flex justify-content-between align-items-start mb-4">
-      <h2>{board.title}</h2>
-      {user && board.owner === user._id && (
-        <div className="d-flex flex-column align-items-end">
-          {/* Botones de acción */}
-          <div className="mb-2">
-            <button
-              className="btn btn-outline-primary me-2 mb-2"
-              onClick={() => navigate(`/boards/${board._id}/share`)}
-            >
-              Compartir
-            </button>
-            <button className="btn btn-danger mb-2" onClick={handleDelete}>
-              Eliminar
-            </button>
-          </div>
+  //dejar de compartir
+  const handleUnshare = (userId) => {
+    if (!window.confirm("¿Quitar acceso a este usuario?")) return;
 
-          {/* Desplegable y botón de estado */}
-          <div className="d-flex flex-column align-items-end">
-            <label className="form-label mb-1">Estado del tablero:</label>
+    unshareBoard(board._id, userId)
+      .then(() => fetchBoard())
+      .catch(err => {
+        console.error(err);
+        setError("No se pudo quitar el acceso");
+      });
+  };
+
+  return (
+    <div className="container mt-4">
+      <button
+        onClick={() => navigate(-1)}
+        className="btn btn-outline-secondary ms-auto d-block"
+      >
+        Volver
+      </button>
+      <h2 className="mt-4">Menú "{board.title}"</h2>
+      {state !== "active" && (
+        <div className="alert alert-warning mt-3 mb-5">
+          Solo se pueden editar tableros activos.
+        </div>
+      )}
+
+      {error && (
+        <div className="alert alert-danger">
+          {error}
+        </div>
+      )}
+      <div className="d-flex flex-column flex-sm-row gap-3">
+
+        {/*  Recetas en menú */}
+        <div className="flex-grow-1 p-3 rounded bg-whitee">
+          <h5 className="mb-3">Recetas del menú</h5>
+          {(board.recipes || []).length === 0 ? (
+            <p className="text-muted">No hay recetas en este tablero.</p>
+          ) : (
+            (board.recipes || []).map((recipeId) => {
+              const recipe = recipes.find(r => r._id === recipeId);
+              if (!recipe) return null;
+
+              return (
+                <div key={recipeId} className="card mb-2 shadow-sm">
+                  <div className="card-body d-flex justify-content-between align-items-center p-2">
+                    <Link to={`/recipes/${recipe._id}`} className="noDeco">
+                      {recipe.title}
+                    </Link>
+                    {user && board.owner === user._id && (
+                      <button
+                        onClick={() => handleRemoveRecipe(recipeId)}
+                        className="btn btn-sm btn-outline-danger"
+                      >
+                        ❌
+                      </button>
+                    )}
+                  </div>
+                </div>
+              );
+            })
+          )}
+
+          <div className="mt-3">
             <select
               className="form-select mb-2"
-              value={state}
-              onChange={(e) => setState(e.target.value)}
-              style={{ minWidth: "150px" }}
+              value={selectedRecipe}
+              onChange={(e) => setSelectedRecipe(e.target.value)}
             >
-              <option value="active">Activo</option>
-              <option value="cancelled">Cancelado</option>
-              <option value="finished">Terminado</option>
+              <option value="">Seleccionar receta</option>
+              {recipes.map((rec) => (
+                <option key={rec._id} value={rec._id}>
+                  {rec.title}
+                </option>
+              ))}
             </select>
-            <button
-              className="btn btn-success"
-              onClick={() => handleChangeState(state)}
-            >
-              Actualizar estado
+            <button className="btn btn-success w-100" onClick={handdleAddRecipe} disabled={state !== "active"}>
+              + Agregar receta
             </button>
           </div>
         </div>
-      )}
-    </div>
 
-    {/* Columna estilo Trello */}
-    <div className="p-3 rounded" style={{ backgroundColor: "#f4f5f7", maxWidth: "500px" }}>
-      <h5 className="mb-3">Recetas del menú</h5>
+        {/* Panel botones */}
+        <div className="d-flex flex-column gap-3 btnMinWidth">
+          {/* Compartir */}
+          <div className="border p-2 rounded bg-whitee">
 
-      {board.recipes.length === 0 ? (
-        <p className="text-muted">No hay recetas en este tablero.</p>
-      ) : (
-        board.recipes.map((recipeId) => {
-          const recipe = recipes.find(r => r._id === recipeId);
-          if (!recipe) return null;
+            {user && board.owner === user._id && (
+              <button
+                className="btn btn-primary btn-sm mb-2 w-100"
+                onClick={() => navigate(`/boards/${board._id}/share`)}
+              >
+                Compartir
+              </button>
+            )}
 
-          return (
-            <div key={recipeId} className="card mb-2 shadow-sm">
-              <div className="card-body d-flex justify-content-between align-items-center p-2">
-                <Link to={`/recipes/${recipe._id}`} style={{ textDecoration: "none" }}>
-                  {recipe.title}
-                </Link>
+            <div className="text-muted" style={{ fontSize: "0.9rem" }}>
+              {user && board.owner === user._id ? (
+                board.sharedWithUsers?.length > 0 ? (
+                  <>
+                    Compartido con:
+                    <div className="mt-1">
+                      {board.sharedWithUsers.map((u) => (
+                        <span key={u._id} className="me-2">
+                          {u.name}
+                          <button
+                            className="btn btn-sm btn-outline-secondary ms-1"
+                            onClick={() => handleUnshare(u._id)}
+                          >
+                            X
+                          </button>
+                        </span>
+                      ))}
+                    </div>
+                  </>
+                ) : (
+                  "Compartido con: Nadie"
+                )
+              ) : (
+                `Compartido por: ${board.ownerInfo?.[0]?.name || "Desconocido"}`
+              )}
+            </div>
+          </div>
 
-                {user && board.owner === user._id && (
+          {user && board.owner === user._id && (
+            <button className="btn btn-danger btn-sm w-100" onClick={handleDelete}>
+              Eliminar
+            </button>
+          )}
+
+          <div className="d-flex flex-column align-items-start">
+            <div className="d-flex justify-content-between w-100 pb-2 mt-4">
+              <label className="form-label mb-1">Estado del tablero:</label>
+              <span className={`badge ${state === "active" ? "bg-success" : state === "cancelled" ? "bg-danger" : "bg-secondary"}`}>
+                {state.toUpperCase()}
+              </span>
+            </div>
+            {user && board.owner === user._id && (
+              <>
+                <select
+                  className="form-select mb-2"
+                  value={newState}
+                  onChange={(e) => setNewState(e.target.value)}
+                  style={{ minWidth: "150px" }}
+                >
+                  <option value="active">Activo</option>
+                  <option value="cancelled">Cancelado</option>
+                  <option value="finished">Terminado</option>
+                </select>
+
+                <button
+                  className="btn btn-success btn-sm mt-2"
+                  onClick={() => handleChangeState(newState)}
+                >
+                  Actualizar estado
+                </button>
+              </>
+            )}
+          </div>
+        </div>
+
+        {/* MODAL
+        {showModal && (
+          <div
+            className="modal fade show d-block"
+            style={{ background: "rgba(0,0,0,0.4)" }}
+          >
+            <div className="modal-dialog">
+              <div className="modal-content">
+                <div className="modal-header">
+                  <h5 className="modal-title">Confirmar eliminación</h5>
                   <button
-                    onClick={() => handleRemoveRecipe(recipeId)}
-                    className="btn btn-sm btn-outline-danger"
+                    className="btn-close"
+                    onClick={() => setShowModal(false)}
+                  />
+                </div>
+
+                <div className="modal-body">
+                  ¿Seguro que querés eliminar esta receta?
+                </div>
+
+                <div className="modal-footer">
+                  <button
+                    className="btn btn-secondary"
+                    onClick={() => setShowModal(false)}
                   >
-                    ❌
+                    Cancelar
                   </button>
-                )}
+
+                  <button
+                    className="btn btn-danger"
+                    disabled={saving}
+                    onClick={handleDelete}
+                  >
+                    {saving ? "Eliminando..." : "Eliminar"}
+                  </button>
+                </div>
               </div>
             </div>
-          );
-        })
-      )}
-
-      {/* Agregar receta */}
-      {user && board.owner === user._id && (
-        <div className="mt-3">
-          <select
-            className="form-select mb-2"
-            value={selectedRecipe}
-            onChange={(e) => setSelectedRecipe(e.target.value)}
-          >
-            <option value="">Seleccionar receta</option>
-            {recipes.map((rec) => (
-              <option key={rec._id} value={rec._id}>
-                {rec.title}
-              </option>
-            ))}
-          </select>
-
-          <button className="btn btn-success w-100" onClick={handdleAddRecipe}>
-            + Agregar receta
-          </button>
-        </div>
-      )}
+          </div>
+        )} */}
+      </div>
     </div>
-
-    {error && <p className="text-danger mt-2">{error}</p>}
-  </div>
-);
+  )
 }

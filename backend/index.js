@@ -1,7 +1,6 @@
 import express from "express";
 import cors from "cors";
 
-
 import RecipesApiRoute from "./api/routes/recipes.api.route.js"
 import UsersApiRoute from "./api/routes/users.api.route.js"
 import AuthApiRoute from "./api/routes/auth.api.route.js"
@@ -26,5 +25,4 @@ app.use("/api/boards", BoardsApiRoute)
 
 app.listen(3333, ()=>{
     console.log("Backend listo")
-
 })

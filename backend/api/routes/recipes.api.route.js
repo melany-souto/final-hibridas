@@ -14,16 +14,12 @@ route.get("/", controller.getAllRecipes);
 // Rutas específicas primero
 route.get("/users/:userId", controller.getRecipesByUser);
 
-// Obtener receta por ID
 route.get("/:id", controller.getRecipeById);
 
-// Crear receta (solo requiere autenticación)
 route.post("/", verifyToken, validate(schema.createRecipeSchema), controller.createRecipe);
 
-// Editar receta (requiere autenticación + verificar dueño)
 route.patch("/:id", verifyToken, verifyRecipeOwner, validate(schema.updateRecipeSchema), controller.updateRecipe);
 
-// Eliminar receta (requiere autenticación + verificar dueño)
 route.delete("/:id", verifyToken, verifyRecipeOwner, controller.deleteRecipeLog);
 
 export default route;

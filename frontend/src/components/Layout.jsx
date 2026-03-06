@@ -14,7 +14,7 @@ export default function AppLayout() {
         <Outlet />
       </div>
 
-      <footer className="text-center py-3 bg-light">
+      <footer className="text-center py-3 bg-light mb-3">
         © 2025 cocinaFacil
       </footer>
     </>

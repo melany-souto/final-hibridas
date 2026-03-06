@@ -1,71 +1,64 @@
 import * as service from "../../services/recipes.service.js"
-import { ObjectId } from "mongodb"; 
-
-// export async function getAllRecipes( req, res ){
-//     service.getAllRecipes(req.query)
-//         .then((recipes)=> res.status(200).json(recipes))
-//         .catch(err => res.status(500).json({mensaje: "Error interno del servidor"}))
-// }
+import { ObjectId } from "mongodb";
 
 export function getAllRecipes(req, res) {
 
-  const filter = {};
+    const filter = {};
 
-  if (req.query.categoryId)
-    filter.categoryId = req.query.categoryId;
+    if (req.query.categoryId)
+        filter.categoryId = req.query.categoryId;
 
-  if (req.query.difficulty)
-    filter.difficulty = req.query.difficulty;
+    if (req.query.difficulty)
+        filter.difficulty = req.query.difficulty;
 
-  if (req.query.title)
-    filter.title = req.query.title;
+    if (req.query.title)
+        filter.title = req.query.title;
 
-  // 🔥 interpretar rango
-  if (req.query.cook_time === "lt15")
-    filter.cook_time = { $lt: 15 };
+    if (req.query.cook_time === "lt15")
+        filter.cook_time = { $lt: 15 };
 
-  if (req.query.cook_time === "15-30")
-    filter.cook_time = { $gte: 15, $lte: 30 };
+    if (req.query.cook_time === "15-30")
+        filter.cook_time = { $gte: 15, $lte: 30 };
 
-  if (req.query.cook_time === "gt30")
-    filter.cook_time = { $gt: 30 };
+    if (req.query.cook_time === "gt30")
+        filter.cook_time = { $gt: 30 };
 
-  service.getAllRecipes(filter)
-    .then((recipes) => {
-      res.status(200).json(recipes);
-    })
-    .catch((err) => {
-      res.status(500).json({ mensaje: "Error interno del servidor" });
-    });
+    service.getAllRecipes(filter)
+        .then((recipes) => {
+            res.status(200).json(recipes);
+        })
+        .catch((err) => {
+            res.status(500).json({ message: "Error interno del servidor" });
+        });
 }
 
-export async function getRecipeById( req, res){
-    const id= req.params.id
+export async function getRecipeById(req, res) {
+    const id = req.params.id
     service.getRecipeById(id)
         .then(recipe => {
-            if(recipe){
+            if (recipe) {
                 res.status(200).json(recipe)
-            }else{
-                res.status(404).json({mensaje: "Receta no encontrado"})
+            } else {
+                res.status(404).json({ message: "Receta no encontrado" })
             }
-        } )
-        // .catch(err=> res.status(500).json({mensaje:"Error interno del servidor"}))
+        })
+        // .catch(err=> res.status(500).json({message:"Error interno del servidor"}))
         .catch(err => {
-  console.error("ERROR REAL:", err);
-  res.status(500).json({
-    mensaje: "Error interno del servidor",
-    error: err.message
-  });
-});
+            console.error("ERROR REAL:", err);
+            res.status(500).json({
+                message: "Error interno del servidor",
+                error: err.message
+            });
+        });
 }
 
 export async function getRecipesByUser(req, res) {
-    const userId= req.params.userId
-     console.log("userId RECIBIDO DE RECIPE:", userId); // revisá qué llega
+    const userId = req.params.userId
+    //  console.log("userId RECIBIDO DE RECIPE:", userId);
     service.getRecipesByUser(userId)
-        .then((recipes)=> res.status(200).json(recipes))
-        .catch(err => res.status(500).json({mensaje: "Error interno del servidor"}))
-        
+        .then((recipes) => res.status(200).json(recipes))
+        .catch(err => res.status(500).json({ message: "Error interno del servidor" }))
+
 }
 
 export function createRecipe(req, res) {
@@ -73,7 +66,7 @@ export function createRecipe(req, res) {
     const categoryId = req.body.categoryId;
 
     if (!userId) {
-        return res.status(400).json({ mensaje: "Usuario no autenticado" });
+        return res.status(400).json({ message: "Usuario no autenticado" });
     }
 
     const recipe = {
@@ -95,7 +88,7 @@ export function createRecipe(req, res) {
         })
         .catch(err => {
             console.error(err);
-            return res.status(500).json({ mensaje: "Error al guardar la receta" });
+            return res.status(500).json({ message: "Error al guardar la receta" });
         });
 }
 
@@ -105,7 +98,7 @@ export async function updateRecipe(req, res) {
     const categoryId = req.body.categoryId;
 
     if (!userId) {
-        return res.status(400).json({ mensaje: "Usuario no autenticado" });
+        return res.status(400).json({ message: "Usuario no autenticado" });
     }
 
     const recipeData = {
@@ -125,22 +118,22 @@ export async function updateRecipe(req, res) {
         .then(recipeUpdated => {
 
             if (!recipeUpdated) {
-                return res.status(404).json({ mensaje: "Receta no encontrada" });
+                return res.status(404).json({ message: "Receta no encontrada" });
             }
 
             return res.status(200).json(recipeUpdated); // ← NO 201
         })
         .catch(err => {
             console.error(err);
-            return res.status(500).json({ mensaje: "Error al actualizar la receta" });
+            return res.status(500).json({ message: "Error al actualizar la receta" });
         });
 }
 
-export async function deleteRecipeLog( req, res ){
-    const id=req.params.id
+export async function deleteRecipeLog(req, res) {
+    const id = req.params.id
 
-        service.deleteRecipeLog(id)
-            .then(()=>res.status(202).json({mensaje: `La receta se eliminó correctamente`}))
-            .catch(err => res.status(500).json({ message: "Error al eliminar la receta" }))
+    service.deleteRecipeLog(id)
+        .then(() => res.status(202).json({ message: `La receta se eliminó correctamente` }))
+        .catch(err => res.status(500).json({ message: "Error al eliminar la receta" }))
 
 }

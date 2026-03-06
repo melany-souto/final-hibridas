@@ -29,30 +29,9 @@ function SessionProvider({ children }) {
         JSON.parse(localStorage.getItem("session")) || null
     );
 
-
-
-//       const [user, setUser] = useState(() => {
-//     try {
-//       const stored = localStorage.getItem("session");
-//       return stored ? JSON.parse(stored) : null;
-//     } catch (error) {
-//       return null;
-//     }
-//   });
-
     const [token, setToken] = useState(
         JSON.parse(localStorage.getItem("token")) || null
     );
-
-
-//       const [token, setToken] = useState(() => {
-//     try {
-//       const stored = localStorage.getItem("token");
-//       return stored ? JSON.parse(stored) : null;
-//     } catch (error) {
-//       return null;
-//     }
-//   });
 
     const login = (userData) => {
         setUser(userData);

@@ -13,16 +13,31 @@ export default function Login() {
 
     const login = useLogin()
 
-   const handleSubmit = (e) => {
-    e.preventDefault();
+    const handleSubmit = (e) => {
+        e.preventDefault();
 
-    loginUser({ email, password })
-        .then(user => {
-            login(user);
-            setError("");
-            navigate("/");
-        })
-        .catch(err => setError("Credenciales inválidas"));
+        if (!email.trim() || !password.trim()) {
+            setError("Email y contraseña son obligatorios");
+            return;
+        }
+
+        loginUser({ email, password })
+            .then(user => {
+                login(user);
+                setError("");
+                navigate("/");
+            })
+            .catch(err => {
+                console.log("Error capturado:", err);
+
+                if (err.status === 400) {
+                    setError(err.details?.join(", ") || err.message); // errores de validación de Yup
+                } else if (err.status === 401) {
+                    setError("Email o contraseña incorrectos");
+                } else {
+                    setError(err.message || "Error del servidor");
+                }
+            });
     }
 
     return (
@@ -51,7 +66,10 @@ export default function Login() {
                                         type="email"
                                         className="form-control"
                                         value={email}
-                                        onChange={(e) => setEmail(e.target.value)}
+                                        onChange={(e) => {
+                                            setEmail(e.target.value);
+                                            setError("");
+                                        }}
                                     />
                                 </div>
 

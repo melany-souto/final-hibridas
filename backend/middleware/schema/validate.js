@@ -1,6 +1,6 @@
 export function validate(schema) {
     return (req, res, next) => {
-        console.log("🟢 BODY ANTES DE VALIDAR:", req.body);
+        // console.log("BODY ANTES DE VALIDAR:", req.body);
         schema
             .validate(req.body, {
                 abortEarly: false,
@@ -11,9 +11,9 @@ export function validate(schema) {
                 next();
             })
             .catch((err) => {
-                console.error("💥 VALIDATION ERROR:", err.errors);
+                console.error("Error de validación:", err.errors);
                 res.status(400).json({
-                    message: "Validation failed",
+                    message: err.errors.join(", "),
                     details: err.errors
                 });
             });

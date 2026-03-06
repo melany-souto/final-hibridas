@@ -15,7 +15,6 @@ import * as schema from "../../schemas/board.schemas.js";
 
 const router = express.Router();
 
-
 router.get("/", verifyToken, controller.getBoardsShared); 
 router.get("/user/:userId", verifyToken, controller.getBoardsByUser);
 

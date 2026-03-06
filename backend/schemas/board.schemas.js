@@ -11,7 +11,7 @@ export const createBoardSchema = yup.object({
         .string()
         .oneOf(["active", "archived"])
         .default("active")
-        
+
 });
 
 export const updateBoardSchema = yup.object({
@@ -25,9 +25,16 @@ export const updateBoardSchema = yup.object({
         .string()
         .oneOf(["active", "archived"])
         .optional(),
-    
+
     recipes: yup
         .array()
         .of(yup.string())
         .optional()
+});
+
+export const addRecipeToBoardSchema = yup.object({
+    recipeId: yup
+        .string()
+        .length(24, "Debe ser un ObjectId válido")
+        .required("recipeId es obligatorio")
 });

@@ -1,54 +1,21 @@
-// import { useParams } from "react-router-dom";
-// import { getRecipes } from "../../services/recipe.service.js"; // ruta corregida
-// import RecipeCard from "../../components/RecipeCard.jsx";
-// import { useState, useEffect } from "react";
-
-// export default function RecipesByCategory() {
-//   const { categoryId } = useParams(); // 🔑 id que viene de NavLink
-//   const [recipes, setRecipes] = useState([]);
-//   const [error, setError] = useState("");
-
-//   useEffect(() => {
-//     getRecipes(categoryId) // 🔑 pasar categoryId, no nombre
-//       .then(res => setRecipes(res))
-//       .catch(err => setError(err.message));
-//   }, [categoryId]);
-
-//   if (error) return <div className="alert alert-danger">{error}</div>;
-//   if (!recipes.length) return <div>No hay recetas en esta categoría</div>;
-
-//   return (
-//     <div className="row">
-//       {recipes.map(recipe => (
-//         <div key={recipe._id} className="col-md-4 mb-4">
-//           <RecipeCard recipe={recipe} />
-//         </div>
-//       ))}
-//     </div>
-//   );
-// }
-
-
-
-
 import { useParams } from "react-router-dom";
-import { getRecipes } from "../../services/recipe.service.js"; // ruta corregida
+import { getRecipes } from "../../services/recipe.service.js"; 
 import RecipeCard from "../../components/RecipeCard.jsx";
 import { useState, useEffect } from "react";
 
 export default function RecipesByCategory() {
-  const { categoryId } = useParams(); // 🔑 id que viene de NavLink
+  const { categoryId } = useParams();
   const [recipes, setRecipes] = useState([]);
   const [showFilters, setShowFilters] = useState(false);
   const [filters, setFilters] = useState({
     difficulty: "",
     cook_time: "",
     title: ""
-  }) // Nuevo estado para mostrar/ocultar filtros
+  })
   const [error, setError] = useState("");
 
   useEffect(() => {
-    getRecipes({ categoryId, ...filters }) // 🔑 pasar categoryId, no nombre
+    getRecipes({ categoryId, ...filters }) 
       .then(res => setRecipes(res))
       .catch(err => setError(err.message));
   }, [categoryId, filters]);

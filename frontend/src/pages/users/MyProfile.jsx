@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { NavLink, useNavigate} from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { getUserById } from "../../services/users.service";
 import { useUser } from "../../contexts/SessionContext";
 import ProfileCard from "../../components/ProfileCard"
@@ -13,7 +13,7 @@ export default function MyProfile() {
     const [error, setError] = useState("");
 
     useEffect(() => {
-        if (!user) return; // 🔒 evita llamadas con undefined
+        if (!user) return;
 
         setLoading(true);
         setError("");
@@ -30,8 +30,6 @@ export default function MyProfile() {
                 setLoading(false);
             });
     }, [user]);
-
-    // 
 
     if (loading) return <p className="text-center mt-4">Cargando usuario...</p>;
     if (error) return <p className="text-center text-danger mt-4">{error}</p>;

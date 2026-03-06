@@ -10,17 +10,18 @@ export const createRecipeSchema = yup.object({
 
     categoryId: yup.string()
         .required("La categoría es obligatoria"),
-        
+
     image: yup.string()
         .url("La imagen debe ser una URL válida")
         .notRequired(),
-      
+
     ingredients: yup.array()
         .of(yup.string().required("Cada ingrediente debe ser un texto"))
         .min(1, "Debe haber al menos un ingrediente")
         .required("Los ingredientes son obligatorios"),
 
     cook_time: yup.number()
+        .typeError("El tiempo de cocción debe ser un número")
         .positive("El tiempo de cocción debe ser positivo")
         .integer("El tiempo de cocción debe ser un número entero")
         .required("El tiempo de cocción es obligatorio"),
@@ -39,7 +40,7 @@ export const createRecipeSchema = yup.object({
 });
 
 export const updateRecipeSchema = yup.object({
-     title: yup.string()
+    title: yup.string()
         .min(3, "El nombre debe tener al menos 3 caracteres")
         .max(50, "El nombre no puede exceder los 50 caracteres"),
 
@@ -56,6 +57,7 @@ export const updateRecipeSchema = yup.object({
         .notRequired(),
 
     cook_time: yup.number()
+        .typeError("El tiempo de cocción debe ser un número")
         .positive("El tiempo de cocción debe ser positivo")
         .integer("El tiempo de cocción debe ser un número entero")
         .notRequired(),

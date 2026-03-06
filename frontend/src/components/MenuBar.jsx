@@ -9,7 +9,6 @@ export default function MenuBar() {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        // Solo categorías activas y no eliminadas
         const data = await getCategories({ activo: true, eliminado: false });
         setCategories(data);
       } catch (err) {
@@ -32,12 +31,8 @@ export default function MenuBar() {
         {categories.map((category) => (
           <NavLink
             key={category._id}
-            // to={`/category/${category._id}`}
             to={`/recipes?categoryId=${category._id}`}
-
-            className={({ isActive }) =>
-              `btn btn-outline-primary me-2 mb-2 ${isActive ? "active" : ""}`
-            }
+            className="btn btn-outline-primary me-2 mb-2"
           >
             {category.name}
           </NavLink>
